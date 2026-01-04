@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音频加密解密工具 v2.1beta</title>
+    <title>音频加密解密工具 v2.1.1</title>
     <style>
         * {
             margin: 0;
@@ -433,6 +433,52 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+        
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -498,30 +544,8 @@
         <div class="section">
             <h2>2. 音频播放</h2>
             
-            <!-- 模式切换 -->
-            <div class="mode-switch">
-                <button class="switch-btn active" onclick="switchPlayerMode('basic')">基础模式</button>
-                <button class="switch-btn" onclick="switchPlayerMode('advanced')">高级模式</button>
-            </div>
-            
-            <!-- 基础播放器 -->
-            <div id="basic-player" class="audio-player">
-                <div id="player-controls">
-                    <button onclick="loadEncryptedAudio()">加载加密音频</button>
-                    <button onclick="playDecryptedAudio()">播放解密音频</button>
-                    <button onclick="toggleAutoDecrypt()">
-                        <span id="auto-decrypt-status">开启自动解密</span>
-                    </button>
-                    <button class="secondary" onclick="switchPlayerMode('advanced')">切换到高级模式</button>
-                </div>
-                <div id="decrypt-status" style="margin: 10px 0; color: #666;"></div>
-                <audio id="audio-player" controls>
-                    您的浏览器不支持音频元素。
-                </audio>
-            </div>
-            
             <!-- 高级播放器 -->
-            <div id="advanced-player" class="advanced-player" style="display: none;">
+            <div id="advanced-player" class="advanced-player">
                 <div class="player-header">
                     <div class="player-title">音乐播放器</div>
                     <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
@@ -550,8 +574,6 @@
                     <button class="control-btn" onclick="audioPlayer.currentTime -= 10">⏪</button>
                     <button class="control-btn play-btn" id="advanced-play-btn" onclick="togglePlay()">▶️</button>
                     <button class="control-btn" onclick="audioPlayer.currentTime += 10">⏩</button>
-                    <button class="control-btn" onclick="toggleAutoDecrypt()">🔒</button>
-                    <button class="control-btn" onclick="switchPlayerMode('basic')" title="切换到基础模式">🔄</button>
                 </div>
                 
                 <div class="volume-control">
@@ -564,10 +586,11 @@
                 
                 <div id="decrypt-status-advanced" style="margin-top: 20px; opacity: 0.8;"></div>
                 
-                <!-- 一键加解密 -->
+                <!-- 一键操作 -->
                 <div class="quick-actions">
                     <button class="quick-btn encrypt" onclick="quickEncrypt()">🔒 一键加密</button>
                     <button class="quick-btn decrypt" onclick="quickDecrypt()">🔓 一键解密</button>
+                    <button class="quick-btn" style="background: #2ecc71; color: white;" onclick="oneClickScan()">📁 一键扫描导入</button>
                 </div>
                 
                 <!-- 设置面板 -->
@@ -594,16 +617,25 @@
                     </div>
                     
                     <div class="setting-item">
-                        <div class="setting-label">播放器模式切换</div>
-                        <div style="display: flex; gap: 10px; margin-top: 8px;">
-                            <button onclick="switchPlayerMode('basic')" class="quick-btn encrypt">基础模式</button>
-                            <button onclick="switchPlayerMode('advanced')" class="quick-btn decrypt">高级模式</button>
+                        <div class="setting-label">音频加密保护</div>
+                        <div style="display: flex; align-items: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="encryption-protection-switch" checked>
+                                <span class="slider round"></span>
+                            </label>
+                            <span style="margin-left: 10px;" id="encryption-protection-status">已开启</span>
                         </div>
                     </div>
                     
                     <div class="setting-item">
                         <div class="setting-label">密钥管理</div>
                         <button onclick="regenerateAllKeys()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 15px;">重新生成5个密钥</button>
+                        
+                        <!-- 自主添加密钥功能 -->
+                        <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <input type="text" id="new-key-input" placeholder="输入32位十六进制密钥" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;">
+                            <button onclick="addKey()" style="padding: 8px 16px; background: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer;">添加密钥</button>
+                        </div>
                         
                         <div style="margin-bottom: 10px;">
                             <strong>密钥列表:</strong>
@@ -628,7 +660,8 @@
         let currentKey = null;
         let currentFile = null;
         let decryptedAudioBuffer = null;
-        let isAutoDecryptEnabled = false;
+        const isAutoDecryptEnabled = true; // 自动解密功能始终开启，不可修改
+        let isEncryptionProtectionEnabled = true; // 音频加密保护功能开关
         let decryptQueue = [];
         let isDecrypting = false;
         
@@ -691,6 +724,10 @@
         
         // 加密音频
         async function encryptAudio() {
+            if (!isEncryptionProtectionEnabled) {
+                showMessage('音频加密保护功能已关闭，无法进行加密操作', 'error');
+                return;
+            }
             if (!currentKey) {
                 showMessage('请先生成密钥', 'error');
                 return;
@@ -738,6 +775,10 @@
         
         // 解密音频
         async function decryptAudio() {
+            if (!isEncryptionProtectionEnabled) {
+                showMessage('音频加密保护功能已关闭，无法进行解密操作', 'error');
+                return;
+            }
             if (!currentKey) {
                 showMessage('请先生成密钥', 'error');
                 return;
@@ -923,19 +964,10 @@
             input.click();
         }
         
-        // 自动解密开关
+        // 自动解密功能已默认开启，且不可关闭
         function toggleAutoDecrypt() {
-            isAutoDecryptEnabled = !isAutoDecryptEnabled;
-            const statusElement = document.getElementById('auto-decrypt-status');
-            if (isAutoDecryptEnabled) {
-                statusElement.textContent = '关闭自动解密';
-                showMessage('已开启自动后台解密播放', 'success');
-                // 初始化自动解密监听
-                initAutoDecryptListener();
-            } else {
-                statusElement.textContent = '开启自动解密';
-                showMessage('已关闭自动后台解密播放', 'info');
-            }
+            // 提示用户自动解密功能始终开启，不可关闭
+            showMessage('自动解密功能始终开启，无需手动操作', 'info');
         }
         
         // 初始化自动解密监听器
@@ -1093,28 +1125,6 @@
             }
         }
         
-        // 播放器模式切换
-        function switchPlayerMode(mode) {
-            const basicPlayer = document.getElementById('basic-player');
-            const advancedPlayer = document.getElementById('advanced-player');
-            const switchBtns = document.querySelectorAll('.switch-btn');
-            
-            // 移除所有active类
-            switchBtns.forEach(btn => btn.classList.remove('active'));
-            
-            if (mode === 'basic') {
-                basicPlayer.style.display = 'block';
-                advancedPlayer.style.display = 'none';
-                switchBtns[0].classList.add('active');
-            } else {
-                basicPlayer.style.display = 'none';
-                advancedPlayer.style.display = 'block';
-                switchBtns[1].classList.add('active');
-                // 更新高级播放器状态
-                updateAdvancedPlayer();
-            }
-        }
-        
         // 更新高级播放器状态
         function updateAdvancedPlayer() {
             const audioPlayer = document.getElementById('audio-player');
@@ -1228,11 +1238,38 @@
         // 更新自动解密状态显示
         function updateAutoDecryptStatus() {
             const statusElement = document.getElementById('advanced-auto-decrypt-status');
-            statusElement.textContent = isAutoDecryptEnabled ? '已开启' : '已关闭';
+            statusElement.textContent = '已开启'; // 自动解密功能始终开启
+        }
+        
+        // 切换音频加密保护功能
+        function toggleEncryptionProtection() {
+            const switchElement = document.getElementById('encryption-protection-switch');
+            const statusElement = document.getElementById('encryption-protection-status');
+            
+            isEncryptionProtectionEnabled = switchElement.checked;
+            statusElement.textContent = isEncryptionProtectionEnabled ? '已开启' : '已关闭';
+            
+            // 保存到本地存储
+            localStorage.setItem('isEncryptionProtectionEnabled', isEncryptionProtectionEnabled);
+            
+            showMessage(`音频加密保护已${isEncryptionProtectionEnabled ? '开启' : '关闭'}`, 'success');
+        }
+        
+        // 更新音频加密保护状态显示
+        function updateEncryptionProtectionStatus() {
+            const switchElement = document.getElementById('encryption-protection-switch');
+            const statusElement = document.getElementById('encryption-protection-status');
+            
+            switchElement.checked = isEncryptionProtectionEnabled;
+            statusElement.textContent = isEncryptionProtectionEnabled ? '已开启' : '已关闭';
         }
         
         // 一键加密
         function quickEncrypt() {
+            if (!isEncryptionProtectionEnabled) {
+                showMessage('音频加密保护功能已关闭，无法进行加密操作', 'error');
+                return;
+            }
             const audioPlayer = document.getElementById('audio-player');
             if (!audioPlayer.src) {
                 showMessage('请先加载音频文件', 'error');
@@ -1258,6 +1295,10 @@
         
         // 一键解密
         function quickDecrypt() {
+            if (!isEncryptionProtectionEnabled) {
+                showMessage('音频加密保护功能已关闭，无法进行解密操作', 'error');
+                return;
+            }
             const audioPlayer = document.getElementById('audio-player');
             if (!audioPlayer.src) {
                 showMessage('请先加载音频文件', 'error');
@@ -1362,11 +1403,11 @@
             updateAdvancedKeyDisplay();
         };
         
-        // 重写原有的toggleAutoDecrypt函数，添加高级模式更新
+        // 重写的toggleAutoDecrypt函数，只显示提示信息，不执行切换操作
         const originalToggleAutoDecrypt = toggleAutoDecrypt;
         toggleAutoDecrypt = function() {
             originalToggleAutoDecrypt.call(this);
-            updateAutoDecryptStatus();
+            // 状态始终是开启，不需要更新
         };
         
         // 全局变量：密钥列表
@@ -1691,6 +1732,7 @@
                         keyItem.innerHTML = `
                             <strong>密钥 ${index + 1}:</strong> ${key}
                             <button onclick="useKey(${index})" style="margin-left: 10px; padding: 4px 8px; font-size: 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">使用</button>
+                            <button onclick="removeKey(${index})" style="margin-left: 5px; padding: 4px 8px; font-size: 12px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">删除</button>
                         `;
                         keyListElement.appendChild(keyItem);
                     });
@@ -1707,11 +1749,84 @@
             }
         }
         
+        // 删除指定索引的密钥
+        function removeKey(index) {
+            if (keyList[index]) {
+                // 从列表中删除
+                keyList.splice(index, 1);
+                
+                // 保存到本地存储
+                localStorage.setItem('autoKeyList', JSON.stringify(keyList));
+                
+                // 更新显示
+                updateKeyListDisplay();
+                
+                // 如果当前使用的密钥被删除，重置为第一个密钥
+                if (currentKey === keyList[index]) {
+                    if (keyList.length > 0) {
+                        currentKey = keyList[0];
+                        updateAdvancedKeyDisplay();
+                    } else {
+                        currentKey = null;
+                        updateAdvancedKeyDisplay();
+                    }
+                }
+                
+                showMessage('密钥已删除', 'success');
+            }
+        }
+        
+        // 添加新密钥
+        function addKey() {
+            const keyInput = document.getElementById('new-key-input');
+            const newKey = keyInput.value.trim();
+            
+            // 验证密钥格式（32位十六进制字符）
+            const hexRegex = /^[0-9a-fA-F]{32}$/;
+            if (!hexRegex.test(newKey)) {
+                showMessage('密钥格式错误，必须是32位十六进制字符', 'error');
+                return;
+            }
+            
+            // 检查密钥是否已存在
+            if (keyList.includes(newKey)) {
+                showMessage('该密钥已存在', 'error');
+                return;
+            }
+            
+            // 添加到密钥列表
+            keyList.push(newKey);
+            
+            // 保存到本地存储
+            localStorage.setItem('autoKeyList', JSON.stringify(keyList));
+            
+            // 更新显示
+            updateKeyListDisplay();
+            
+            // 清空输入框
+            keyInput.value = '';
+            
+            showMessage('密钥添加成功', 'success');
+        }
+        
         // 初始化
         document.addEventListener('DOMContentLoaded', async () => {
             initAudioEventListeners();
             updateVolumeDisplay();
             updateAutoDecryptStatus();
+            
+            // 初始化音频加密保护功能
+            const savedProtectionStatus = localStorage.getItem('isEncryptionProtectionEnabled');
+            if (savedProtectionStatus !== null) {
+                isEncryptionProtectionEnabled = savedProtectionStatus === 'true';
+            }
+            updateEncryptionProtectionStatus();
+            
+            // 为加密保护开关添加事件监听器
+            const switchElement = document.getElementById('encryption-protection-switch');
+            if (switchElement) {
+                switchElement.addEventListener('change', toggleEncryptionProtection);
+            }
             
             // 自动生成设备码和密钥
             await autoGenerateKeys();
@@ -1719,6 +1834,9 @@
             
             // 加载歌曲库（自动扫描）
             loadSongLibrary();
+            
+            // 初始化自动解密监听
+            initAutoDecryptListener();
         });
         
         // 监听文件选择事件，支持多选
@@ -1750,6 +1868,126 @@
         // 上传文件夹导入
         function uploadFolder() {
             document.getElementById('folder-upload').click();
+        }
+        
+        // 一键扫描导入
+        function oneClickScan() {
+            // 创建一个模态对话框
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                width: 90%;
+                max-width: 500px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            `;
+            
+            modalContent.innerHTML = `
+                <h3 style="color: #667eea; margin-bottom: 20px; text-align: center;">一键扫描导入</h3>
+                <p style="margin-bottom: 20px; text-align: center;">选择导入方式</p>
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
+                    <button onclick="oneClickScanFile()" style="
+                        flex: 1;
+                        padding: 15px;
+                        background: #3498db;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        transition: all 0.3s;
+                    ">📄 选择文件</button>
+                    <button onclick="oneClickScanFolder()" style="
+                        flex: 1;
+                        padding: 15px;
+                        background: #2ecc71;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        transition: all 0.3s;
+                    ">📁 选择文件夹</button>
+                </div>
+                <button onclick="closeModal()" style="
+                    width: 100%;
+                    padding: 10px;
+                    background: #95a5a6;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                ">取消</button>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // 保存模态框引用
+            window.oneClickScanModal = modal;
+        }
+        
+        // 一键扫描 - 选择文件
+        function oneClickScanFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.mp3,.flac,.wav,.smp3,.sflac,.lgg,.lav';
+            input.multiple = true;
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) {
+                    addToSongLibrary(files);
+                }
+                closeModal();
+            };
+            input.click();
+        }
+        
+        // 一键扫描 - 选择文件夹
+        function oneClickScanFolder() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.webkitdirectory = true;
+            input.mozdirectory = true;
+            input.directory = true;
+            input.accept = '.mp3,.flac,.wav,.smp3,.sflac,.lgg,.lav';
+            input.onchange = (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) {
+                    // 更新文件信息
+                    const fileInfo = `共选择 ${files.length} 个文件<br>总大小: ${(files.reduce((total, file) => total + file.size, 0) / (1024 * 1024)).toFixed(2)} MB`;
+                    document.getElementById('file-info').innerHTML = fileInfo;
+                    
+                    // 自动添加到歌曲列表
+                    addToSongLibrary(files);
+                }
+                closeModal();
+            };
+            input.click();
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            if (window.oneClickScanModal) {
+                document.body.removeChild(window.oneClickScanModal);
+                window.oneClickScanModal = null;
+            }
         }
     </script>
 </body>
