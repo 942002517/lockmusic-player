@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音频加密解密工具 - 产品介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 20px 0 15px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .version-history {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .version-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .version-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .version-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .version-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .version-features {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .version-features li {
+            margin-bottom: 5px;
+            position: relative;
+        }
+        
+        .version-features li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+        }
+        
+        .usage-steps {
+            list-style-type: decimal;
+            padding-left: 25px;
+            margin: 20px 0;
+        }
+        
+        .usage-steps li {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tech-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .tech-item span {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .note-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+            margin: 10px 10px 10px 0;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .demo-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>音频加密解密工具</h1>
+            <p>保护您的音频文件安全，提供无缝播放体验</p>
+            <div style="margin-top: 20px;">
+                <a href="audio_encryptor.html" class="btn">开始使用</a>
+                <a href="README.md" class="btn btn-secondary" target="_blank">查看文档</a>
+            </div>
+        </div>
+        
+        <!-- 产品简介 -->
+        <div class="section">
+            <h2>产品简介</h2>
+            <p>音频加密解密工具是一款基于HTML5技术开发的Web应用，用于加密和解密音频文件，支持多种加密格式，提供自动后台解密播放功能。</p>
+            <p>该工具采用先进的AES-GCM 256位加密算法，确保您的音频文件安全可靠。同时，提供了现代化的用户界面和流畅的用户体验，支持基础模式和高级模式切换，满足不同用户的需求。</p>
+        </div>
+        
+        <!-- 主要功能 -->
+        <div class="section">
+            <h2>主要功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🔐 多种加密格式支持</h4>
+                    <p>支持SMP3、SFLAC、LGG、LAV等多种加密格式，满足不同场景的需求。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>⚡ 自动后台解密</h4>
+                    <p>默认始终开启自动解密功能，可直接播放加密音频，无需手动操作。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎵 高级音乐播放器</h4>
+                    <p>提供现代化的音乐播放器界面，支持歌曲元数据显示、进度调节、音量控制等功能。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📁 大文件支持</h4>
+                    <p>最大支持250MB的音频文件，满足大多数音频文件的处理需求。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔄 一键加解密</h4>
+                    <p>支持一键加密和解密当前播放的音频文件，操作简单便捷。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔧 高级密钥管理</h4>
+                    <p>支持自动生成设备码和5个密钥，支持密钥切换、重新生成、自主添加和删除。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🛡️ 音频加密保护</h4>
+                    <p>新增音频加密保护功能开关，可控制加密解密操作权限，保护音频文件安全。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 响应式设计</h4>
+                    <p>适配不同屏幕尺寸，在手机、平板和电脑上都能正常使用。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🚀 一键扫描导入</h4>
+                    <p>高级版UI集成，支持一键选择文件或文件夹导入，操作更便捷。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 版本更新日志 -->
+        <div class="section">
+            <h2>版本更新日志</h2>
+            <div class="version-history">
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v3.0</span>
+                        <span class="version-date">2026-01-05</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>版本号更新：从 v2.1.4 更新到 v3.0</li>
+                        <li>UI优化：全新的现代化播放器界面设计</li>
+                        <li>内置直接播放加密文件功能</li>
+                        <li>优化加密解密算法，提高处理速度</li>
+                        <li>增强的文件选择功能，支持多选和所有音频格式</li>
+                        <li>改进的密钥管理和自动保存机制</li>
+                        <li>优化的播放控制和进度条设计</li>
+                        <li>增强的用户体验，包括加载状态和错误处理</li>
+                        <li>改进的歌曲信息提取：增强从文件名提取歌曲名和歌手的能力，支持多种格式</li>
+                        <li>优化的文件列表显示：直接展示歌曲名和歌手信息，清晰分层</li>
+                        <li>改进的解密文件名生成：生成更友好的文件名，去除冗余后缀</li>
+                        <li>增强的中文文件名支持：确保中文文件名处理正常，无乱码问题</li>
+                        <li>优化的文件显示布局：歌曲名、歌手、原始文件名清晰展示</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v2.1.4</span>
+                        <span class="version-date">2026-01-04</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>版本号更新：从 v2.1.1 更新到 v2.1.4</li>
+                        <li>升级加密算法：支持双重加密和单重加密兼容</li>
+                        <li>密钥持久化：密钥只需要输入一次，即可自动保存并用于解锁所有加密文件</li>
+                        <li>加密格式优化：简化加密流程，提高加密效率</li>
+                        <li>向后兼容性增强：支持解密所有以前版本加密的文件</li>
+                        <li>智能解密检测：自动识别加密文件格式，选择合适的解密方式</li>
+                        <li>优化密钥管理：增强密钥存储和读取机制</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v2.1.1</span>
+                        <span class="version-date">2026-01-04</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>版本号更新：从 v2.1beta 更新到 v2.1.1</li>
+                        <li>新增音频加密保护功能开关，可控制加密解密操作权限</li>
+                        <li>新增自主添加密钥功能，支持手动输入32位十六进制密钥</li>
+                        <li>新增密钥删除功能，可删除不需要的密钥</li>
+                        <li>优化自动解密功能，默认始终开启，简化用户操作</li>
+                        <li>移除自动解密开关，提升用户体验</li>
+                        <li>改进密钥列表管理，支持密钥的使用和删除操作</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v2.1beta</span>
+                        <span class="version-date">2026-01-03</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>新增高级音乐播放器UI</li>
+                        <li>支持基础/高级模式切换</li>
+                        <li>显示歌曲元数据（标题、艺术家、专辑）</li>
+                        <li>新增设置面板，集成密钥管理功能</li>
+                        <li>支持一键加解密当前播放音频</li>
+                        <li>高级播放器控制（进度条、音量调节、快进快退）</li>
+                        <li>优化界面设计，采用渐变色彩主题</li>
+                        <li>隐藏主界面设备码与密钥管理，移至设置面板</li>
+                        <li>初次启动自动生成设备码与5个密钥</li>
+                        <li>支持非加密文件播放</li>
+                        <li>支持自动扫描导入歌曲</li>
+                        <li>支持手动扫描导入歌曲</li>
+                        <li>新增歌曲库功能，支持管理已导入的歌曲</li>
+                        <li>支持多选文件导入</li>
+                        <li>支持文件夹导入功能</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v2.0</span>
+                        <span class="version-date">2026-01-03</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>新增自动后台解密播放功能</li>
+                        <li>支持文件拖放</li>
+                        <li>新增解密队列管理</li>
+                        <li>优化用户体验和界面设计</li>
+                    </ul>
+                </div>
+                <div class="version-item">
+                    <div class="version-header">
+                        <span class="version-number">v1.0</span>
+                        <span class="version-date">2026-01-03</span>
+                    </div>
+                    <ul class="version-features">
+                        <li>基础的音频加密解密功能</li>
+                        <li>设备码和密钥生成</li>
+                        <li>文件管理和播放功能</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 使用方法 -->
+        <div class="section">
+            <h2>使用方法</h2>
+            <h3>基础使用流程</h3>
+            <ol class="usage-steps">
+                <li>打开音频加密解密工具（<code>audio_encryptor.html</code>）</li>
+                <li>系统会自动生成设备码和5个密钥（首次启动时，存储在浏览器本地）</li>
+                <li>在「音频文件处理」部分选择要处理的音频文件或文件夹</li>
+                <li>确保「音频加密保护」功能已开启（在设置面板中）</li>
+                <li>点击「加密」或「解密」按钮进行处理</li>
+                <li>处理完成后，可以在「处理后的文件」列表中下载或播放文件</li>
+            </ol>
+            
+            <h3>自动后台解密播放</h3>
+            <ol class="usage-steps">
+                <li>确保已生成密钥（首次启动时自动生成）</li>
+                <li>直接加载加密音频文件，系统会自动在后台解密并播放（自动解密功能默认始终开启）</li>
+                <li>可以通过拖放加密音频文件到页面，或从歌曲库中选择加密歌曲</li>
+                <li>解密状态将显示在播放器底部的「解密状态」区域</li>
+            </ol>
+            
+            <h3>密钥管理</h3>
+            <ol class="usage-steps">
+                <li>点击播放器右上角的⚙️图标打开设置面板</li>
+                <li>在设备码输入框中输入自定义设备码，或点击「生成设备码」按钮</li>
+                <li>点击「生成密钥」按钮，系统将基于当前设备码生成新密钥</li>
+                <li>点击「重新生成5个密钥」按钮，可以批量生成5个新密钥</li>
+                <li>在密钥列表中点击「使用」按钮，可以切换到指定密钥</li>
+                <li>在密钥输入框中输入32位十六进制密钥，点击「添加密钥」按钮，可以自主添加密钥</li>
+                <li>在密钥列表中点击「删除」按钮，可以删除指定密钥</li>
+            </ol>
+            
+            <h3>音频加密保护功能</h3>
+            <ol class="usage-steps">
+                <li>点击播放器右上角的⚙️图标打开设置面板</li>
+                <li>找到「音频加密保护」开关</li>
+                <li>开启时：可以进行音频加密和解密操作</li>
+                <li>关闭时：无法进行加密和解密操作，保护音频文件安全</li>
+            </ol>
+        </div>
+        
+        <!-- 技术特点 -->
+        <div class="section">
+            <h2>技术特点</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <span>前端框架</span>
+                    <p>纯HTML5 + CSS3 + JavaScript</p>
+                </div>
+                <div class="tech-item">
+                    <span>加密算法</span>
+                    <p>AES-GCM 256位加密</p>
+                </div>
+                <div class="tech-item">
+                    <span>密钥生成</span>
+                    <p>基于SHA-256哈希算法</p>
+                </div>
+                <div class="tech-item">
+                    <span>文件处理</span>
+                    <p>HTML5 File API + Web Crypto API</p>
+                </div>
+                <div class="tech-item">
+                    <span>音频播放</span>
+                    <p>HTML5 Audio API</p>
+                </div>
+                <div class="tech-item">
+                    <span>存储方式</span>
+                    <p>localStorage本地存储</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 注意事项 -->
+        <div class="section">
+            <h2>注意事项</h2>
+            <div class="note-box">
+                <strong>📝 重要提示：</strong>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>密钥是基于设备码生成的，同一设备码生成的密钥相同</li>
+                    <li>请妥善保管设备码和密钥，丢失将无法解密文件</li>
+                    <li>加密后的文件无法直接播放，需要使用本工具解密或开启自动解密功能</li>
+                    <li>自动解密功能需要先生成密钥才能使用</li>
+                    <li>建议在使用前备份原始音频文件</li>
+                    <li>支持的浏览器：Chrome 60+、Firefox 53+、Safari 11+、Edge 79+</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <strong>⚠️ 安全警告：</strong>
+                <p style="margin-top: 10px;">本工具仅用于学习和研究目的，请勿用于非法用途。使用本工具加密的文件仍可能存在被破解的风险，请根据实际需求选择合适的加密强度和保护措施。</p>
+            </div>
+        </div>
+        
+        <!-- 错误代码与解决方案 -->
+        <div class="section">
+            <h2>错误代码与解决方案</h2>
+            <div class="error-solutions">
+                <div class="error-item">
+                    <h3>错误代码：FILE_NAME_GARBLED</h3>
+                    <h4>问题描述：中文文件名显示乱码，无法正确识别歌曲信息</h4>
+                    <h4>解决方案：</h4>
+                    <pre><code>// 原代码
+function parseSongMetadata(fileUrl) {
+    const fileName = fileUrl.split('/').pop().split('?')[0];
+    // ...
+}
+
+// 修复后代码
+function parseSongMetadata(fileUrl) {
+    const fileName = decodeURIComponent(fileUrl.split('/').pop().split('?')[0]);
+    // ...
+}</code></pre>
+                    <p>通过使用 <code>decodeURIComponent()</code> 函数对URL进行解码，确保中文文件名能正确显示。</p>
+                </div>
+                
+                <div class="error-item">
+                    <h3>错误代码：SONG_INFO_PARSE_FAILED</h3>
+                    <h4>问题描述：无法从文件名中提取歌曲名和歌手信息</h4>
+                    <h4>解决方案：</h4>
+                    <pre><code>// 原代码
+function parseSongMetadata(fileUrl) {
+    // 只支持 "艺术家 - 标题" 格式
+    const dashIndex = cleanName.indexOf(' - ');
+    if (dashIndex > -1) {
+        artist = cleanName.substring(0, dashIndex);
+        title = cleanName.substring(dashIndex + 3);
+    }
+    // ...
+}
+
+// 修复后代码
+function parseSongMetadata(fileUrl) {
+    // 支持多种格式
+    const patterns = [
+        /^(.*?)\s*-\s*(.*?)$/,        // 格式：艺术家 - 标题
+        /^(.*?)\s*[-_]\s*(.*?)$/,      // 格式：艺术家-_标题
+        /^(.*?)\s*[－]\s*(.*?)$/,     // 格式：艺术家 － 标题（全角破折号）
+        /^(.*?)\s*[：:]\s*(.*?)$/,     // 格式：艺术家:标题
+        /^(.*?)\s*[：:]\s*(.*?)$/      // 格式：艺术家：标题（全角冒号）
+    ];
+    
+    let matched = false;
+    for (const pattern of patterns) {
+        const match = cleanName.match(pattern);
+        if (match && match[1] && match[2]) {
+            artist = match[1].trim();
+            title = match[2].trim();
+            matched = true;
+            break;
+        }
+    }
+    // ...
+}</code></pre>
+                    <p>通过添加多种正则表达式模式，支持从不同格式的文件名中提取歌曲信息。</p>
+                </div>
+                
+                <div class="error-item">
+                    <h3>错误代码：FILE_LIST_DISPLAY_POOR</h3>
+                    <h4>问题描述：文件列表显示不清晰，无法直观区分歌曲信息</h4>
+                    <h4>解决方案：</h4>
+                    <pre><code>// 原代码
+function addFileToList(fileName, blob) {
+    fileItem.innerHTML = `
+        &lt;span>${fileName}&lt;/span>
+        &lt;div>
+            &lt;button onclick="downloadFile('${fileUrl}', '${fileName}')">下载&lt;/button>
+            &lt;button onclick="playFile('${fileUrl}')">播放&lt;/button>
+        &lt;/div>
+    `;
+}
+
+// 修复后代码
+function addFileToList(fileName, blob) {
+    // 解析歌曲元数据
+    const metadata = parseSongMetadata(fileUrl);
+    
+    // 创建友好的文件名显示
+    const displayName = decodeURIComponent(fileName);
+    
+    fileItem.innerHTML = `
+        &lt;div style="flex: 1;">
+            &lt;div style="font-weight: bold; margin-bottom: 4px;">${metadata.title}&lt;/div>
+            &lt;div style="font-size: 12px; color: #666; margin-bottom: 2px;">${metadata.artist}&lt;/div>
+            &lt;div style="font-size: 11px; color: #999;">${displayName}&lt;/div>
+        &lt;/div>
+        &lt;div style="display: flex; flex-direction: column; gap: 4px;">
+            &lt;button onclick="downloadFile('${fileUrl}', '${fileName}')" style="padding: 5px 10px; font-size: 14px;">下载&lt;/button>
+            &lt;button onclick="playFile('${fileUrl}')" style="padding: 5px 10px; font-size: 14px;">播放&lt;/button>
+        &lt;/div>
+    `;
+}</code></pre>
+                    <p>优化文件列表显示，分层展示歌曲名、歌手和原始文件名，提高可读性。</p>
+                </div>
+                
+                <div class="error-item">
+                    <h3>错误代码：DECRYPTED_FILE_NAME_UNFRIENDLY</h3>
+                    <h4>问题描述：解密后的文件名包含不必要的后缀，不便于识别</h4>
+                    <h4>解决方案：</h4>
+                    <pre><code>// 原代码
+const decryptedFileName = currentFile.name.replace(/\.[^/.]+$/, '') + '_decrypted.' + originalFormat;
+
+// 修复后代码
+// 解析原始文件名获取歌曲信息
+const originalFileName = currentFile.name.replace(/\.[^/.]+$/, '');
+let title = originalFileName;
+let artist = '';
+
+// 尝试从原始文件名中提取艺术家和标题
+const pattern = /^(.*?)\s*-\s*(.*?)$/;
+const match = originalFileName.match(pattern);
+if (match && match[1] && match[2]) {
+    artist = match[1].trim() + ' - ';
+    title = match[2].trim();
+}
+
+// 生成友好的解密文件名
+const decryptedFileName = artist + title + '.' + originalFormat;</code></pre>
+                    <p>生成更友好的解密文件名，去除冗余后缀，基于原始文件名提取的歌曲信息生成清晰的文件名。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 快速开始 -->
+        <div class="section demo-section">
+            <h2>快速开始</h2>
+            <p>点击下方按钮开始使用音频加密解密工具</p>
+            <a href="audio_encryptor.html" class="btn" style="margin-top: 20px; padding: 15px 30px; font-size: 1.2em;">立即体验</a>
+        </div>
+    </div>
+</body>
+</html>
